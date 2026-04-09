@@ -1,0 +1,10 @@
+pandas
+numpy
+scikit-learn
+nltk
+matplotlib
+seaborn
+Flask
+Werkzeug
+sqlite3-binary
+requests

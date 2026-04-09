@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Settings — Travel buddy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body {
+      margin: 0;
+      background: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      color: #1e293b;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header__title {
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 1.4rem;
+    }
+
+    .header__nav a {
+      color: #64748b;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-left: 2rem;
+      transition: color 0.2s;
+    }
+
+    .header__nav a:hover,
+    .header__nav a.active {
+      color: #2563eb;
+    }
+
+    .settings-wrapper {
+      max-width: 1100px;
+      margin: 40px auto;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 30px;
+      padding: 0 20px;
+    }
+
+    /* Sidebar */
+    .settings-sidebar {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 20px;
+      height: fit-content;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .sidebar-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .sidebar-user-info p {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .sidebar-user-info span {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: #64748b;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    .nav-item.active {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      opacity: 0.7;
+    }
+
+    .nav-item.active svg {
+      opacity: 1;
+    }
+
+    /* Main Content */
+    .settings-content {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    .content-header {
+      padding: 30px 40px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .content-header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .content-header p {
+      margin: 8px 0 0 0;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .content-body {
+      padding: 40px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #f1f5f9;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group.full {
+      grid-column: span 2;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: #1e293b;
+      background: #ffffff;
+      transition: all 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-group input:disabled {
+      background: #f8fafc;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .profile-banner {
+      height: 120px;
+      background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+      border-radius: 12px;
+      margin-bottom: 60px;
+      position: relative;
+    }
+
+    .profile-picture-edit {
+      position: absolute;
+      bottom: -40px;
+      left: 40px;
+      width: 100px;
+      height: 100px;
+      border-radius: 24px;
+      background: #ffffff;
+      border: 4px solid #ffffff;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #2563eb;
+    }
+
+    .verified-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: #22c55e;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+      font-size: 12px;
+    }
+
+    .action-bar {
+      padding: 24px 40px;
+      background: #f8fafc;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .flash {
+      margin: 20px 40px -20px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .flash.success {
+      background: #dcfce7;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .flash.error {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    @media (max-width: 900px) {
+      .settings-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        padding: 1rem 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="mobile-toggle" id="mobile-toggle" onclick="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="header__logo">
+      <a href="/" style="text-decoration: none; color: inherit;">
+        <img src="/static/images/logo.png" alt="Travel Buddy" class="logo-img"
+          onerror="this.outerHTML='<span class=\'header__title\'>Travel buddy</span>'">
+      </a>
+    </div>
+    <nav class="header__nav" id="header-nav">
+      <a href="/">Home</a>
+      <a href="/explore">Explore</a>
+      <a href="/activities">Activities</a>
+      <a href="/saved-trips">Saved Trips (<span id="saved-count">0</span>)</a>
+      <div class="mobile-only-auth">
+        {% if current_user %}
+        <a href="/profile" class="active">My Profile</a>
+        <a href="/logout">Logout</a>
+        {% else %}
+        <a href="/login">Login</a>
+        <a href="/signup">Sign Up</a>
+        {% endif %}
+      </div>
+    </nav>
+    <div class="header__auth">
+      {% if current_user %}
+      <a href="/profile" class="login-avatar active" title="View Profile">{{ user.username[0]|upper }}</a>
+      {% else %}
+      <a href="/login" class="login-btn">Log in</a>
+      <a href="/signup" class="signup-btn">Sign in</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="settings-wrapper">
+    <!-- Sidebar -->
+    <aside class="settings-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">{{ user.username[0]|upper }}</div>
+        <div class="sidebar-user-info">
+          <p>{{ user.username }}</p>
+          <span></span>
+        </div>
+      </div>
+
+      <a href="/profile" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        Public Profile
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        Privacy & Security
+      </a>
+      <a href="/saved-trips" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+        </svg>
+        Saved Itineraries
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+        Notifications
+      </a>
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #f1f5f9;">
+        <a href="/logout" class="nav-item" style="color: #ef4444;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            style="transform: rotate(180deg);">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          Sign Out
+        </a>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <div class="settings-content">
+      <div class="content-header">
+        <h1>Public Profile</h1>
+        <p>Manage your public identity and travel preferences.</p>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="/profile">
+        <div class="content-body">
+          <div class="profile-banner">
+            <div class="profile-picture-edit">
+              {{ user.username[0]|upper }}
+              <div class="verified-badge">✓</div>
+            </div>
+          </div>
+
+          <div class="section-title">Personal Information</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="first_name">First Name</label>
+              <input type="text" id="first_name" name="first_name" placeholder="John"
+                value="{{ user.first_name or '' }}" />
+            </div>
+            <div class="form-group">
+              <label for="last_name">Last Name</label>
+              <input type="text" id="last_name" name="last_name" placeholder="Doe" value="{{ user.last_name or '' }}" />
+            </div>
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" id="username" value="{{ user.username }}" disabled />
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" value="{{ user.email }}" disabled />
+            </div>
+          </div>
+
+          <div class="section-title" style="margin-top: 12px;">Travel Identity</div>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="travel_style">Travel Personal</label>
+              <select id="travel_style" name="travel_style">
+                <option value="Adventure & Thrill" {% if user.travel_style=='Adventure & Thrill' %}selected{% endif %}>
+                  Adventure & Thrill</option>
+                <option value="Luxury & Relaxation" {% if user.travel_style=='Luxury & Relaxation' %}selected{% endif
+                  %}>Luxury & Relaxation</option>
+                <option value="Backpacking & Budget" {% if user.travel_style=='Backpacking & Budget' %}selected{% endif
+                  %}>Backpacking & Budget</option>
+                <option value="Cultural & Heritage" {% if user.travel_style=='Cultural & Heritage' %}selected{% endif
+                  %}>Cultural & Heritage</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="current_location">Current Location</label>
+              <input type="text" id="current_location" name="current_location" placeholder="e.g. Mumbai, India"
+                value="{{ user.current_location or current_location }}" />
+              <small style="color: #64748b; font-size: 0.75rem; margin-top: 4px; display: block;">This will be used as
+                your default starting point for searches and AI planning.</small>
+            </div>
+            <div class="form-group full">
+              <label for="bio">Professional Bio</label>
+              <textarea id="bio" name="bio"
+                placeholder="Tell the world about your travel philosophies...">{{ user.bio or '' }}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button type="button" class="btn btn-secondary" onclick="window.location.reload()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/static/script.js"></script>
+  <script>
+    // Map existing bio to textarea safely
+    document.getElementById('bio').value = `{{ user.bio or '' }}`;
+  </script>
+</body>
+
+</html>

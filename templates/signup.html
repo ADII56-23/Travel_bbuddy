@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — Travel buddy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: url('/static/images/bali.png') center/cover no-repeat;
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Inter', sans-serif;
+    }
+    .header { position: absolute; width: 100%; top: 0; }
+    .auth-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 20px 40px;
+    }
+    .auth-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 40px;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .auth-container h2 { margin-bottom: 8px; font-size: 2rem; font-weight: 700; text-align: center; color: #ffffff; letter-spacing: -0.02em; }
+    .auth-container p { text-align: center; margin-bottom: 30px; color: #cbd5e1; font-size: 0.95rem; }
+    .flash { padding: 12px; margin-bottom: 24px; border-radius: 8px; text-align: center; font-size: 0.9rem; font-weight: 500; backdrop-filter: blur(4px); }
+    .flash.success { background: rgba(22, 101, 52, 0.4); color: #86efac; border: 1px solid rgba(134, 239, 172, 0.3); }
+    .flash.error { background: rgba(153, 27, 27, 0.4); color: #fca5a5; border: 1px solid rgba(252, 165, 165, 0.3); }
+    .auth-group { margin-bottom: 20px; }
+    .auth-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; color: #e2e8f0; }
+    .auth-group input { box-sizing: border-box; width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; color: #ffffff; font-family: inherit; font-size: 1rem; transition: all 0.3s ease; }
+    .auth-group input::placeholder { color: #94a3b8; }
+    .auth-group input:focus { outline: none; background: rgba(255, 255, 255, 0.12); border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+    .auth-btn { width: 100%; padding: 14px; margin-top: 10px; border: none; border-radius: 12px; background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); color: white; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); }
+    .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4); }
+    .auth-btn:active { transform: translateY(0); }
+    .auth-link { display: block; text-align: center; margin-top: 24px; font-size: 0.95rem; color: #bae6fd; text-decoration: none; transition: color 0.2s; }
+    .auth-link:hover { color: #ffffff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header__logo">
+      <a href="/" style="text-decoration: none; color: inherit;">
+        <img src="/static/images/logo.png" alt="Travel Buddy" class="logo-img" onerror="this.outerHTML='<span class=\'header__title\'>Travel buddy</span>'">
+      </a>
+    </div>
+    <nav class="header__nav">
+      <a href="/">Home</a>
+      <a href="/explore">Explore</a>
+      <a href="/activities">Activities</a>
+      <a href="/saved-trips">Saved Trips</a>
+    </nav>
+    <div class="header__auth">
+      <a href="/login" class="login-btn">Log in</a>
+      <a href="/signup" class="signup-btn active">Sign in</a>
+    </div>
+  </header>
+  <div class="auth-wrapper">
+    <main class="auth-container">
+      <h2>Create Account</h2>
+      <p>Join Travel buddy today</p>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <form method="POST" action="/signup">
+        <div class="auth-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required placeholder="johndoe" />
+        </div>
+        <div class="auth-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" required placeholder="you@example.com" />
+        </div>
+        <div class="auth-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required placeholder="••••••••" minlength="6" />
+        </div>
+        <button type="submit" class="auth-btn">Sign Up</button>
+        <a href="/login" class="auth-link">Already have an account? Log in</a>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

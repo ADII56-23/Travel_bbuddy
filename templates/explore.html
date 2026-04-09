@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explore Packages — Travel buddy</title>
+  <meta name="description" content="AI-powered travel recommendations. Find your perfect package." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <!-- Dual Mapping Support (Google + Leaflet Fallback) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAf7S957P7yHtC7C_qjLPCaAX-bKB5lp-4&libraries=places&v=weekly&loading=async"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="mobile-toggle" id="mobile-toggle" onclick="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="header__logo">
+      <a href="/" style="text-decoration: none; color: inherit;">
+        <img src="/static/images/logo.png" alt="Travel Buddy" class="logo-img"
+          onerror="this.outerHTML='<span class=\'header__title\'>Travel buddy</span>'">
+      </a>
+    </div>
+    <nav class="header__nav" id="header-nav">
+      <a href="/">Home</a>
+      <a href="/explore" class="active">Explore</a>
+      <a href="/activities">Activities</a>
+      <a href="/saved-trips">Saved Trips (<span id="saved-count">0</span>)</a>
+      <div class="mobile-only-auth">
+        {% if current_user %}
+        <a href="/profile">My Profile</a>
+        <a href="/logout">Logout</a>
+        {% else %}
+        <a href="/login">Login</a>
+        <a href="/signup">Sign Up</a>
+        {% endif %}
+      </div>
+    </nav>
+    <div class="header__auth">
+      {% if current_user %}
+      <a href="/profile" class="login-avatar" title="View Profile">{{ current_user.username[0]|upper }}</a>
+      {% else %}
+      <a href="/login" class="login-btn">Log in</a>
+      <a href="/signup" class="signup-btn">Sign in</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Hero / Search Section for Explore Page -->
+  <section class="hero-section explore-page" style="height: 100vh;">
+    <div class="hero-bg">
+      <img src="/static/images/bali.png" alt="Explore Bali Background">
+    </div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Discover your<br><span class="highlight">perfect trip</span></h1>
+        <p style="color:white; margin-top:20px; font-size:1.1rem; opacity:0.9;">Tell us your preferences and let our AI
+          curate the best packages for you.</p>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div id="search-section" class="search-bar-container">
+      <div class="search-tabs">
+        <button class="tab active">Tours</button>
+        <button class="tab">Treks</button>
+      </div>
+      <form id="search-form" class="search-bar">
+        <div class="search-input-group">
+          <label for="dest">Choose destination</label>
+          <input type="text" id="dest" placeholder="e.g. Japan, France" list="dest-list" required>
+          <datalist id="dest-list">
+            <option value="Goa"></option>
+            <option value="Manali"></option>
+            <option value="Jaipur"></option>
+            <option value="Kerala"></option>
+            <option value="Ladakh"></option>
+            <option value="Varanasi"></option>
+            <option value="Andaman"></option>
+            <option value="Rishikesh"></option>
+            <option value="Udaipur"></option>
+            <option value="Shimla"></option>
+            <option value="Japan"></option>
+            <option value="Switzerland"></option>
+            <option value="Hawaii"></option>
+            <option value="France"></option>
+            <option value="Kenya"></option>
+            <option value="Italy"></option>
+            <option value="Iceland"></option>
+            <option value="Thailand"></option>
+            <option value="Australia"></option>
+            <option value="Brazil"></option>
+            <option value="Turkey"></option>
+            <option value="Bali"></option>
+            <option value="Bhutan"></option>
+          </datalist>
+        </div>
+        <div class="search-input-group">
+          <label for="duration">Duration (days)</label>
+          <input type="number" id="duration" placeholder="7" value="7">
+        </div>
+        <div class="search-input-group">
+          <label for="budget">Budget (₹)</label>
+          <input type="number" id="budget" placeholder="150000" value="150000">
+        </div>
+        <!-- Interests (JS depends on these tags) -->
+        <div class="interests-dropdown" style="display:none;">
+          <button type="button" class="interest-tag" data-value="Adventure">Adventure</button>
+          <button type="button" class="interest-tag" data-value="Relaxation">Relaxation</button>
+        </div>
+        <button type="submit" id="btn-search" class="search-submit">
+          <span class="search-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="3" fill="none"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+        </button>
+      </form>
+      <!-- Trending/Quick Search -->
+      <div class="trending-mini">
+        <span>Trending:</span>
+        <button onclick="quickSearch('Japan')">Japan</button>
+        <button onclick="quickSearch('France')">France</button>
+        <button onclick="quickSearch('Goa')">Goa</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Recommendations Section -->
+  <section class="results">
+    <div class="results__header">
+      <h2>Recommended Packages</h2>
+      <div class="results__header-right">
+        <span class="results__badge">AI Sorted</span>
+      </div>
+    </div>
+
+    <!-- View Toggle for Explore -->
+    <div id="explore-view-toggle" class="view-toggle" style="display:none;">
+      <button class="toggle-btn active" onclick="switchExploreView('list')">📋 Grid View</button>
+      <button class="toggle-btn" onclick="switchExploreView('map')">🗺️ Map View</button>
+    </div>
+
+    <!-- Map Container -->
+    <div id="map-container" class="map-wrapper">
+      <div id="map"></div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div id="spinner" class="spinner">
+      <div class="spinner__ring"></div>
+      <p>Finding the best trips for you…</p>
+    </div>
+
+    <!-- Cards -->
+    <div id="cards" class="cards-grid">
+      <div class="state-msg">
+        <h3>Ready to explore?</h3>
+        <p>Enter your preferences above to get personalized recommendations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>Powered by Travel buddy — Built with Python, Flask &amp; Machine Learning</p>
+    </div>
+  </footer>
+
+  <!-- Modal Logic remains same -->
+  <div id="modal" class="modal">
+    <div class="modal__content">
+      <button class="modal__close" onclick="closeModal()"> ×</button>
+      <div id="modal-image" class="modal__image"></div>
+      <div class="modal__body">
+        <div class="modal__header">
+          <h2 id="modal-title"></h2>
+          <span id="modal-match" class="card__match card__match--high"></span>
+        </div>
+        <div class="modal__meta">
+          <span id="modal-duration"></span>
+          <span id="modal-dest"></span>
+        </div>
+        <div class="modal__itinerary">
+          <h3>Full Package Details</h3>
+          <p id="modal-desc"></p>
+          <div id="modal-activities" class="card__activities" style="margin-top: 15px;"></div>
+        </div>
+        <div class="modal__price-section">
+          <div class="modal__price-info">
+            <span class="modal__price-label">Final Price</span>
+            <div id="modal-price" class="modal__price"></div>
+            <div class="modal__price-tax">Includes all taxes and surcharges</div>
+          </div>
+          <button class="btn-book" onclick="bookAndEdit()">Add and Edit Itinerary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Package Detail View (Wanderlog Style) -->
+  <div id="detail-view" class="explore-split-view">
+    <!-- Simple Back Navigation -->
+    <button class="detail-back-btn" onclick="exitDetailView()" aria-label="Back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <div class="split-content detail-content">
+      <div id="detail-hero" class="split-hero">
+        <img id="detail-hero-img" src="" alt="Destination">
+        <div class="split-trip-card shadow-lg">
+          <h1 id="detail-trip-title">Trip to...</h1>
+          <div class="split-trip-meta">
+            <div id="date-picker-container" class="date-range-picker">
+              <span id="detail-dates-display" onclick="toggleDatePicker()">🗓️ Add trip dates</span>
+              <div id="date-inputs-wrap" style="display:none; align-items:center; gap:8px;">
+                <input type="date" id="trip-start-date" class="date-input-small" onchange="updateTripDateRange()">
+                <span>to</span>
+                <input type="date" id="trip-end-date" class="date-input-small" onchange="updateTripDateRange()">
+              </div>
+            </div>
+            <div class="user-stack">
+              <button class="btn-save-detail" onclick="bookTrip()">Save This Trip</button>
+              <div id="itinerary-avatars" style="display:flex; align-items:center; margin-left:12px;">
+                <span class="avatar-icon" title="You (Organizer)">👤</span>
+              </div>
+              <button class="add-friend-btn" onclick="addFriendToTrip()">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="split-main-body">
+        <!-- Places to visit Section -->
+        <div id="places-section" class="detail-section">
+          <div class="section-header-row">
+            <h3>⌵ Places to visit</h3>
+            <span class="dots">...</span>
+          </div>
+          <div class="add-place-bar">
+            <span class="loc-icon">📍</span>
+            <input type="text" id="add-place-input" placeholder="Add a place (e.g. Cafe, Museum)"
+              onkeydown="handleAddPlace(event)">
+            <div class="action-icons">
+              <div class="icon-btn" onclick="handleAddPlace({key:'Enter', target: document.getElementById('add-place-input')})" title="Add Place">＋</div>
+              <div class="icon-btn">☰</div>
+            </div>
+          </div>
+          <!-- Search Result Preview Card -->
+          <div id="place-preview-card" class="place-preview-card">
+            <!-- Dynamic content from Google Places API -->
+          </div>
+          <div id="added-places-list" style="margin-bottom: 25px;">
+            <!-- User added places will appear here -->
+          </div>
+          <div class="rec-places-header">
+            <span>⌵ Recommended places</span>
+          </div>
+          <div id="rec-places-row" class="rec-places-row">
+            <!-- Dynamic places -->
+          </div>
+        </div>
+
+        <!-- Itinerary Section -->
+        <div id="itinerary-section" class="detail-section">
+          <div class="section-header-row">
+            <h1 style="font-size: 2.5rem; color: #1a1a1a;">Itinerary</h1>
+            <button class="btn-orange-pill">🗓️ Add trip dates</button>
+          </div>
+          <div id="itinerary-list-container" class="itinerary-items">
+            <div class="empty-state" id="itinerary-empty">
+              <p>Your itinerary is empty. Add places above or select from recommended to organize your days.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget Section -->
+        <div id="budget-section" class="detail-section">
+          <div class="section-header-row">
+            <h3>⌵ Budget Breakdown</h3>
+            <span class="dots" onclick="resetBudget()">Reset</span>
+          </div>
+          <div id="budget-breakdown-container" class="budget-table">
+            <!-- Dynamic Breakdown items will be injected here -->
+          </div>
+          <div class="budget-add-row" onclick="addNewBudgetItem()">
+            ＋ Add another expense
+          </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div id="notes-section" class="detail-section">
+          <div class="section-header-row">
+            <h3>⌵ Notes</h3>
+            <span class="dots" style="cursor:pointer;" onclick="editNotes()">Edit</span>
+          </div>
+          <textarea id="detail-notes-area" class="notes-area"
+            style="width:100%; border:none; outline:none; font-family:inherit; resize:vertical; min-height:100px;"
+            placeholder="Write or paste anything here: how to get around, tips and tricks..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="split-map-container">
+      <div id="detail-map"></div>
+      <div class="exit-split-view" onclick="exitDetailView()">✕</div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay for transition -->
+  <div id="detail-loader" class="detail-loader">
+    <div class="loader-spinner"></div>
+  </div>
+
+  <script src="/static/script.js"></script>
+  {% include 'chatbot.html' %}
+</body>
+
+</html>

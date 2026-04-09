@@ -1,0 +1,48 @@
+<!-- Floating Chatbot Widget -->
+<div id="chat-widget-container">
+  <div id="chat-bubble" class="chat-bubble">
+    <img src="/static/images/pngtree-3d-robot-chatbot-ai-servers-technology-png-image_12735161.avif" alt="AI Agent">
+  </div>
+
+  <div id="agent-container" class="agent-container hidden">
+    <div class="agent-header">
+      <div class="agent-avatar"><img src="/static/images/pngtree-3d-robot-chatbot-ai-servers-technology-png-image_12735161.avif" alt="Robot"></div>
+      <div class="agent-header-info">
+        <h2>Travel Assistant</h2>
+        <span>Online</span>
+      </div>
+      <button id="close-chat"
+        style="margin-left: auto; color: #64748b; font-size: 1.5rem; background: none; border: none; cursor: pointer;">&times;</button>
+    </div>
+
+    <div id="chat-box" class="chat-box">
+      <div class="message message--ai">Hello! I'm your AI Travel Agent. How can I help you today?</div>
+    </div>
+
+    <div id="typing-indicator" class="typing-indicator" style="display:none; margin: 0 15px 15px;">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+
+    <div class="options-menu" id="options-menu">
+      <div class="option-item" onclick="startFlow('local')">📍 <span>Local Trip</span></div>
+      <div class="option-item" onclick="startFlow('foreign')">✈️ <span>Foreign Trip</span></div>
+    </div>
+
+    <form id="chat-form" class="input-area">
+      <div class="plus-btn" id="plus-btn">+</div>
+      <input type="text" id="chat-input" class="chat-input" placeholder="Ask me something..." autocomplete="off">
+      <button type="submit" class="send-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/static/agent.css" />
+<script src="/static/agent.js"></script>

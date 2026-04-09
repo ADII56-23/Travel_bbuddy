@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel buddy — Find Your Perfect Trip</title>
+  <meta name="description"
+    content="AI-powered travel package recommendations. Enter your destination, budget, and interests to find the perfect trip." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="mobile-toggle" id="mobile-toggle" onclick="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="header__logo">
+      <a href="/" style="text-decoration: none; color: inherit;">
+        <img src="/static/images/logo.png" alt="Travel Buddy" class="logo-img"
+          onerror="this.outerHTML='<span class=\'header__title\'>Travel buddy</span>'">
+      </a>
+    </div>
+    <nav class="header__nav" id="header-nav">
+      <a href="/" class="active">Home</a>
+      <a href="/explore">Explore</a>
+      <a href="/activities">Activities</a>
+      <a href="/saved-trips">Saved Trips (<span id="saved-count">0</span>)</a>
+      <div class="mobile-only-auth">
+        {% if current_user %}
+        <a href="/profile">My Profile</a>
+        <a href="/logout">Logout</a>
+        {% else %}
+        <a href="/login">Login</a>
+        <a href="/signup">Sign Up</a>
+        {% endif %}
+      </div>
+    </nav>
+    <div class="header__auth">
+      {% if current_user %}
+      <a href="/profile" class="login-avatar" title="View Profile">{{ current_user.username[0]|upper }}</a>
+      {% else %}
+      <a href="/login" class="login-btn">Log in</a>
+      <a href="/signup" class="signup-btn">Sign in</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-bg">
+      <img src="/static/images/index_hero_v3.jpg" alt="Hero Background">
+    </div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="google-review-top">
+          <span class="g-logo">G</span>
+          <span class="g-rating">4.9 ★★★★★</span>
+          <span class="g-text">Trustpilot & Google Reviews</span>
+        </div>
+        <h1>Travel beyond<br><span class="highlight">boundaries</span></h1>
+        <h3 class="ex">Create detailed itineraries, explore user-shared guides, and manage your bookings seamlessly —
+          all in one place.</h3>
+        <div class="hero-actions">
+          <button class="btn-discover" onclick="window.location.href='/explore'">Discover more</button>
+          <button class="btn-watch">
+            <span class="play-icon">▶</span> Watch Our Videos
+          </button>
+        </div>
+      </div>
+
+      <!-- Floating Images -->
+      <div class="floating-images">
+        <div class="floating-circle circle-1">
+          <img src="/static/images/turkey.png" alt="Turkey">
+        </div>
+        <div class="floating-circle circle-2">
+          <img src="/static/images/bhutan.png" alt="Bhutan">
+        </div>
+        <div class="floating-circle circle-3">
+          <img src="/static/images/bali.png" alt="Bali">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- International Destinations Section -->
+  <section class="international-section">
+    <div class="section-container">
+      <div class="carousel-container">
+        <div class="carousel-nav prev">❮</div>
+        <div class="carousel-items">
+          <div class="dest-card">
+            <div class="card-img">
+              <img src="/static/images/turkey.png" alt="Turkey">
+            </div>
+            <div class="card-info">
+              <h3>Turkey <span class="stars">★★★★★</span></h3>
+              <p>Experience the magical landscapes of Cappadocia and the rich history of Istanbul. A perfect blend of
+                East and West.</p>
+            </div>
+          </div>
+          <div class="dest-card">
+            <div class="card-img">
+              <img src="/static/images/bali.png" alt="Bali">
+            </div>
+            <div class="card-info">
+              <h3>Bali <span class="stars">★★★★★</span></h3>
+              <p>Tropical paradise with stunning beaches, lush jungles, and vibrant culture. The ultimate relaxation
+                destination.</p>
+            </div>
+          </div>
+          <div class="dest-card">
+            <div class="card-img">
+              <img src="/static/images/bhutan.png" alt="Bhutan">
+            </div>
+            <div class="card-info">
+              <h3>Bhutan <span class="stars">★★★★★</span></h3>
+              <p>The Land of the Thunder Dragon. Explore ancient monasteries and breathtaking Himalayan peaks in the
+                happiest country.</p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-nav next">❯</div>
+      </div>
+
+      <div class="stats-panel">
+        <h2 class="section-title">International</h2>
+        <p class="section-desc">From the cherry blossoms of Japan to the peaks of Switzerland, discover worlds you've
+          only dreamed of. Our AI curator filters through thousands of packages to find your exact match.</p>
+        <p class="section-desc small" style="margin-bottom: 20px;">Explore the world with unbeatable prices and premium
+          comfort.</p>
+
+        <div class="stats-items">
+          <div class="stat">200+ Hotels</div>
+          <div class="stat">200K Tourists</div>
+          <div class="stat">50+ Destination</div>
+        </div>
+
+        <button class="btn-checkout" onclick="window.location.href='/international'">Check out now</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- South India Exploration Section (New) -->
+  <section class="regional-exploration">
+    <div class="regional-content">
+      <div class="regional-header">
+        <h2>South India Exploration</h2>
+        <div class="dashed-line"></div>
+      </div>
+      <div class="regional-grid">
+        <div class="regional-main">
+          <img src="/static/images/1617962417_66432970_2366831123377478_6626199308599296000_n_2.jpg.webp" alt="South India">
+          <div class="overlay">
+            <button class="explore-more-btn">
+              <span class="arrow">◀</span> Explore more <span class="arrow">▶</span>
+            </button>
+          </div>
+        </div>
+        <div class="regional-item">
+          <img src="/static/images/athirappilly_falls.png" alt="Athirappilly Falls">
+        </div>
+        <div class="regional-item">
+          <img src="/static/images/kerala_houseboat.png" alt="Kerala Backwaters">
+        </div>
+        <div class="regional-item">
+          <img src="/static/images/munnar_tea_gardens.png" alt="Munnar Tea Gardens">
+        </div>
+        <div class="regional-item">
+          <img src="/static/images/kathakali_dancers.png" alt="Kathakali Culture">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews Section -->
+  <section class="reviews-section">
+    <div class="section-header">
+      <span class="line"></span>
+      <h2>Google Review</h2>
+      <span class="line"></span>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <p>"The AI recommendation was spot on. Our trip to Kerala was perfectly planned within our budget. Highly
+          recommended!"</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar"></div>
+          <div class="reviewer-info">
+            <strong>john doe</strong>
+            <span>Verified Explorer</span>
+          </div>
+        </div>
+      </div>
+      <div class="review-card">
+        <p>"Found a hidden gem in Japan that wasn't on any other list. The process was seamless and the itinerary was
+          great."</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar"></div>
+          <div class="reviewer-info">
+            <strong>Sarah Miller</strong>
+            <span>World Traveller</span>
+          </div>
+        </div>
+      </div>
+      <!-- Add more reviews here -->
+      <div class="review-card">
+        <p>"The AI recommendation was spot on.Travelling is easy with this website . Highly
+          recommended!"</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar"></div>
+          <div class="reviewer-info">
+            <strong>Willium Smith</strong>
+            <span>Verified Explorer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>Powered by Travel buddy — Built with Python, Flask &amp; Machine Learning</p>
+    </div>
+  </footer>
+
+
+  <!-- Trip Details Modal -->
+  <div id="modal" class="modal">
+    <div class="modal__content">
+      <button class="modal__close" onclick="closeModal()">×</button>
+      <div id="modal-image" class="modal__image"></div>
+      <div class="modal__body">
+        <div class="modal__header">
+          <h2 id="modal-title"></h2>
+          <span id="modal-match" class="card__match card__match--high"></span>
+        </div>
+        <div class="modal__meta">
+          <span id="modal-duration"></span>
+          <span id="modal-dest"></span>
+        </div>
+        <div class="modal__itinerary">
+          <h3>Full Package Details</h3>
+          <p id="modal-desc"></p>
+          <div id="modal-activities" class="card__activities" style="margin-top: 15px;"></div>
+        </div>
+        <div class="modal__price-section">
+          <div class="modal__price-info">
+            <span class="modal__price-label">Final Price</span>
+            <div id="modal-price" class="modal__price"></div>
+            <div class="modal__price-tax">Includes all taxes and surcharges</div>
+          </div>
+          <button class="btn-book" onclick="bookAndEdit()">Add and Edit Itinerary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="/static/script.js"></script>
+</body>
+
+</html>

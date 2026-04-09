@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Top Activities — Travel buddy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/agent.css" />
+  <style>
+    :root {
+      --font-outfit: 'Outfit', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    /* New Hero Design from Image */
+    .hero-container {
+      position: relative;
+      height: 90vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .hero-background {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+
+    .hero-background img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.85);
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      padding: 0 5%;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hero-content h1 {
+      font-family: var(--font-outfit);
+      font-size: clamp(1.8rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 4rem;
+      letter-spacing: -0.02em;
+      filter: drop-shadow(0 2px 30px rgba(0, 0, 0, 0.3));
+      white-space: nowrap;
+      width: 100%;
+      text-align: center;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .hero-search {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 100px;
+      padding: 20px 35px 20px 60px;
+      border: none;
+      font-size: 1.1rem;
+      font-family: inherit;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+      outline: none;
+      color: #334155;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Bottom HUD elements from image */
+    .hero-footer {
+      position: absolute;
+      bottom: 40px;
+      width: 100%;
+      padding: 0 5%;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 20;
+    }
+
+    .author-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .author-tag img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid white;
+      object-fit: cover;
+    }
+
+    .slider-controls {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      color: white;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .dots {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .dot.active {
+      background: #ffffff;
+      width: 30px;
+      border-radius: 10px;
+      opacity: 1;
+    }
+
+    .pause-btn {
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0.9;
+    }
+
+    /* Content below hero */
+    .section-container {
+      max-width: 1200px;
+      margin: 80px auto;
+      padding: 0 5%;
+    }
+
+    .section-title {
+      font-family: var(--font-outfit);
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 40px;
+    }
+
+    .iconic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+    }
+
+    .iconic-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .iconic-card__img {
+      height: 320px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .iconic-card__img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .iconic-card:hover .iconic-card__img img {
+      transform: scale(1.05);
+    }
+
+    .wishlist-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      color: #0f172a;
+      z-index: 5;
+    }
+
+    .wishlist-btn:hover {
+      background: #ffffff;
+      color: #ef4444;
+      transform: scale(1.1);
+    }
+
+    .iconic-card__body {
+      padding: 20px;
+    }
+
+    .iconic-card__loc {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .iconic-card__body h3 {
+      margin: 8px 0 12px 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #00361c;
+      line-height: 1.3;
+    }
+
+    .iconic-card__rating {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
+
+    .score {
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .score::before {
+      content: '★';
+      color: #22c55e;
+      font-size: 1.1rem;
+    }
+
+    .count {
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+
+    .iconic-card__price {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #0f172a;
+    }
+
+    .iconic-card__price strong {
+      color: #00361c;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    /* Responsive Activities */
+    @media (max-width: 1024px) {
+      .hero-container {
+        height: 70vh;
+      }
+
+      .hero-content h1 {
+        font-size: 2.5rem;
+        white-space: normal;
+      }
+
+      .iconic-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-container {
+        height: 60vh;
+      }
+
+      .hero-content h1 {
+        font-size: 2.2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-search {
+        padding: 15px 25px 15px 50px;
+        font-size: 0.95rem;
+      }
+
+      .search-icon {
+        left: 20px;
+      }
+
+      .hero-footer {
+        display: none;
+      }
+
+      .section-container {
+        margin: 40px auto;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .iconic-tour-card {
+        flex: 0 0 280px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-content h1 {
+        font-size: 1.8rem;
+      }
+
+      .iconic-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .iconic-tour-card {
+        flex: 0 0 100% !important;
+        scroll-snap-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="mobile-toggle" id="mobile-toggle" onclick="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="header__logo">
+      <a href="/" style="text-decoration: none; color: inherit;">
+        <img src="/static/images/logo.png" alt="Travel Buddy" class="logo-img"
+          onerror="this.outerHTML='<span class=\'header__title\'>Travel buddy</span>'">
+      </a>
+    </div>
+    <nav class="header__nav" id="header-nav">
+      <a href="/">Home</a>
+      <a href="/explore">Explore</a>
+      <a href="/activities" class="active">Activities</a>
+      <a href="/saved-trips">Saved Trips (<span id="saved-count">0</span>)</a>
+      <div class="mobile-only-auth">
+        {% if current_user %}
+        <a href="/profile">My Profile</a>
+        <a href="/logout">Logout</a>
+        {% else %}
+        <a href="/login">Login</a>
+        <a href="/signup">Sign Up</a>
+        {% endif %}
+      </div>
+    </nav>
+    <div class="header__auth">
+      {% if current_user %}
+      <a href="/profile" class="login-avatar" title="View Profile">{{ current_user.username[0]|upper }}</a>
+      {% else %}
+      <a href="/login" class="login-btn">Log in</a>
+      <a href="/signup" class="signup-btn">Sign in</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <section class="hero-container">
+    <div class="hero-background">
+      <img src="/static/images/zipline_hero_1774611126010.png" alt="Ziplining Adventure">
+    </div>
+    <div class="hero-content">
+      <h1>Book Traveller-backed things to do</h1>
+      <div class="search-wrapper">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="activity-search" class="hero-search" placeholder="Search by destination"
+          onkeydown="if(event.key === 'Enter') searchActivities(this.value)">
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Results Section -->
+  <section id="search-results-section" class="section-container" style="display: none;">
+    <h2 class="section-title" id="search-results-title">Activities in ...</h2>
+    <div id="activity-results-grid" class="iconic-grid">
+      <!-- To be filled by JS -->
+    </div>
+  </section>
+
+  <script>
+    async function searchActivities(dest) {
+      if (!dest) return;
+
+      const grid = document.getElementById('activity-results-grid');
+      const section = document.getElementById('search-results-section');
+      const title = document.getElementById('search-results-title');
+
+      section.style.display = 'block';
+      title.innerText = `Searching activities in ${dest}...`;
+      grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; font-size: 1.2rem; padding: 40px; color: #64748b;">Consulting our AI travel experts...</p>';
+
+      // Scroll to results
+      section.scrollIntoView({ behavior: 'smooth' });
+
+      try {
+        const response = await fetch(`/api/activities-search?dest=${encodeURIComponent(dest)}`);
+        const activities = await response.json();
+
+        title.innerText = `Must-do activities in ${dest}`;
+
+        if (!activities || activities.length === 0) {
+          grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; font-size: 1.2rem; padding: 40px;">No specific activities found for this location. Try another!</p>';
+          return;
+        }
+
+        grid.innerHTML = activities.map(act => `
+          <div class="iconic-card" style="animation: fadeInUp 0.5s ease forwards; border-left: 4px solid #6366f1;">
+            <div class="iconic-card__body">
+              <div style="display: inline-block; background: #eef2ff; padding: 4px 12px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; color: #6366f1; margin-bottom: 15px;">${act.distance_from_landmark || 'Nearby'}</div>
+              <p class="iconic-card__loc">📍 ${act.location || dest}</p>
+              <h3>${act.name}</h3>
+              <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5;">${act.description}</p>
+              <div style="margin-bottom: 20px; padding: 12px; background: #f8fafc; border-radius: 10px; border: 1px dashed #e2e8f0; font-size: 0.85rem; color: #475569;">
+                <strong>📍 Location:</strong> ${act.location}<br>
+                <strong>🚗 Distance:</strong> ${act.distance_from_landmark}
+              </div>
+              <button class="btn-remove--large" style="width: 100%; background: #6366f1; color: white; border: none;" onclick="window.location.href='/explore?dest=${encodeURIComponent(dest)}'">Book Packages</button>
+            </div>
+          </div>
+        `).join('');
+
+      } catch (err) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: red;">Error loading activities. Please try again.</p>';
+      }
+    }
+
+    // Add CSS for fade animation to body
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+
+  <section class="section-container">
+    <h1 class="section-title" style="text-align: center; font-size: 2.2rem; margin-bottom: 60px; font-weight: 800;">
+      World-Class Top Tours</h1>
+    <div class="iconic-grid"
+      style="display: flex; overflow-x: auto; gap: 30px; padding: 20px 5px; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;">
+      <style>
+        .iconic-grid::-webkit-scrollbar {
+          display: none;
+        }
+
+        .iconic-tour-card {
+          flex: 0 0 360px;
+          scroll-snap-align: start;
+          min-width: 0;
+        }
+      </style>
+      <div class="iconic-card iconic-tour-card" style="border-top: 4px solid #6366f1;">
+        <div class="iconic-card__body">
+          <p class="iconic-card__loc">🌎 Cancún, Mexico</p>
+          <div class="iconic-card__rating"><span class="score">4.8</span><span class="count">(1,245)</span></div>
+          <h3>Chichén Itzá Premier Tour with Cenote & Lunch</h3>
+          <p class="iconic-card__price">from <strong>₹7,029</strong></p>
+        </div>
+      </div>
+      <div class="iconic-card iconic-tour-card" style="border-top: 4px solid #6366f1;">
+        <div class="iconic-card__body">
+          <p class="iconic-card__loc">🌎 Rome, Italy</p>
+          <div class="iconic-card__rating"><span class="score">4.9</span><span class="count">(15,626)</span></div>
+          <h3>Vatican Museums, Sistine Chapel & St Peter's Tour</h3>
+          <p class="iconic-card__price">from <strong>₹8,096</strong></p>
+        </div>
+      </div>
+      <div class="iconic-card iconic-tour-card" style="border-top: 4px solid #6366f1;">
+        <div class="iconic-card__body">
+          <p class="iconic-card__loc">🌎 Nevada, USA</p>
+          <div class="iconic-card__rating"><span class="score">4.7</span><span class="count">(8,210)</span></div>
+          <h3>Grand Canyon Sunset Tour from Las Vegas</h3>
+          <p class="iconic-card__price">from <strong>₹12,450</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% include 'chatbot.html' %}
+  <script src="/static/script.js"></script>
+</body>
+
+</html>
