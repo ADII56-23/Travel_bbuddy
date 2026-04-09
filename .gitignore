@@ -1,0 +1,6 @@
+.env
+*.log
+*.tmp
+*.env.local
+*.env.development
+*.env.test
