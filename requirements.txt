@@ -1,10 +1,4 @@
-pandas
-numpy
-scikit-learn
-nltk
-matplotlib
-seaborn
-Flask
-Werkzeug
-sqlite3-binary
-requests
+# Existing content...
+
+# To add:
+python-dotenv
