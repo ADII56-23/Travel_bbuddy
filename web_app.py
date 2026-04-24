@@ -21,7 +21,7 @@ def get_db_connection():
 app = Flask(__name__)
 app.secret_key = 'super_secret_travel_key' # Added for session management
 
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = ""
 DEFAULT_AI_MODEL = "google/gemini-2.0-flash-001"
 
 def init_db():
